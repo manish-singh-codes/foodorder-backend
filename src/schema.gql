@@ -1,0 +1,171 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AuthResponse {
+  accessToken: String!
+  user: User!
+}
+
+input CheckoutOrderInput {
+  orderId: ID!
+  paymentMethodId: ID!
+}
+
+enum Country {
+  AMERICA
+  INDIA
+}
+
+input CreateOrderInput {
+  items: [OrderItemInput!]!
+  restaurantId: ID!
+}
+
+input CreatePaymentMethodInput {
+  details: String!
+  isDefault: Boolean! = false
+  type: PaymentType!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type MenuItem {
+  category: String!
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  imageUrl: String
+  isAvailable: Boolean!
+  name: String!
+  price: Float!
+  restaurantId: String!
+}
+
+type Mutation {
+  addPaymentMethod(input: CreatePaymentMethodInput!): PaymentMethod!
+  cancelOrder(orderId: ID!): Order!
+  checkoutOrder(input: CheckoutOrderInput!): Order!
+  createOrder(input: CreateOrderInput!): Order!
+  deletePaymentMethod(id: ID!): PaymentMethod!
+  login(input: LoginInput!): AuthResponse!
+  register(input: RegisterInput!): AuthResponse!
+  updatePaymentMethod(input: UpdatePaymentMethodInput!): PaymentMethod!
+}
+
+type Order {
+  country: Country!
+  createdAt: DateTime!
+  id: ID!
+  orderItems: [OrderItemEntity!]!
+  paymentMethodId: String
+  restaurant: Restaurant
+  restaurantId: String!
+  status: OrderStatus!
+  totalAmount: Float!
+  updatedAt: DateTime!
+  user: User
+  userId: String!
+}
+
+type OrderItemEntity {
+  id: ID!
+  menuItem: MenuItem
+  menuItemId: String!
+  quantity: Float!
+  unitPrice: Float!
+}
+
+input OrderItemInput {
+  menuItemId: ID!
+  quantity: Int!
+}
+
+enum OrderStatus {
+  CANCELLED
+  CONFIRMED
+  PAID
+  PENDING
+}
+
+type PaymentMethod {
+  country: Country!
+  createdAt: DateTime!
+  details: String!
+  id: ID!
+  isDefault: Boolean!
+  type: PaymentType!
+  updatedAt: DateTime!
+  userId: String!
+}
+
+enum PaymentType {
+  CARD
+  UPI
+  WALLET
+}
+
+type Query {
+  allOrders: [Order!]!
+  allPaymentMethods: [PaymentMethod!]!
+  me: User!
+  menuItem(id: ID!): MenuItem!
+  menuItems(restaurantId: ID!): [MenuItem!]!
+  myOrders: [Order!]!
+  myPaymentMethods: [PaymentMethod!]!
+  order(id: ID!): Order!
+  restaurant(id: ID!): Restaurant!
+  restaurants: [Restaurant!]!
+  user(id: ID!): User!
+  users: [User!]!
+}
+
+input RegisterInput {
+  country: Country!
+  email: String!
+  name: String!
+  password: String!
+  role: Role!
+}
+
+type Restaurant {
+  address: String!
+  country: Country!
+  createdAt: DateTime!
+  cuisine: String!
+  id: ID!
+  imageUrl: String
+  isActive: Boolean!
+  menuItems: [MenuItem!]
+  name: String!
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  MEMBER
+}
+
+input UpdatePaymentMethodInput {
+  details: String
+  id: ID!
+  isDefault: Boolean
+}
+
+type User {
+  country: Country!
+  createdAt: DateTime!
+  email: String!
+  id: ID!
+  name: String!
+  role: Role!
+  updatedAt: DateTime!
+}
