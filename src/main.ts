@@ -12,7 +12,7 @@ async function bootstrap() {
     forbidNonWhitelisted: true,
   }));
 
-  app.enableCors({ origin: 'http://localhost:3000', credentials: true });
+  app.enableCors({ origin: 'foodorder-fe.netlify.app', credentials: true });
 
   await app.listen(port);
   console.log(`🚀 GraphQL API: http://localhost:${port}/graphql`);
