@@ -2,11 +2,13 @@ import {
   Injectable,
   OnModuleInit,
   OnModuleDestroy,
+  Global,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 
+@Global()
 @Injectable()
 export class PrismaService
   extends PrismaClient
