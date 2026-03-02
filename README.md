@@ -1,98 +1,242 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🍽️ FoodOrder — Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+> NestJS · GraphQL · Prisma · PostgreSQL · JWT RBAC + Re-BAC
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+A role-based food ordering backend built with NestJS and GraphQL, supporting three user roles (Admin, Manager, Member) with country-level access restrictions.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 📁 Project Structure
 
-## Project setup
-
-```bash
-$ npm install
+```
+backend/
+├── prisma/
+│   ├── schema.prisma        # Database schema
+│   └── seed.ts              # Mock data seeder
+├── src/
+│   ├── auth/                # JWT auth, login, register
+│   │   ├── dto/
+│   │   │   ├── auth.response.ts
+│   │   │   ├── login.input.ts
+│   │   │   └── register.input.ts
+│   │   ├── strategies/
+│   │   │   └── jwt.strategy.ts
+│   │   ├── auth.module.ts
+│   │   ├── auth.resolver.ts
+│   │   └── auth.service.ts
+│   ├── common/              # Guards, decorators, enums
+│   │   ├── decorators/
+│   │   │   ├── current-user.decorator.ts
+│   │   │   └── roles.decorator.ts
+│   │   ├── enums/
+│   │   │   ├── country.enum.ts
+│   │   │   └── role.enum.ts
+│   │   └── guards/
+│   │       ├── country-scope.guard.ts
+│   │       ├── jwt-auth.guard.ts
+│   │       └── roles.guard.ts
+│   ├── menu-items/          # Menu item queries
+│   ├── orders/              # Order CRUD + checkout + cancel
+│   ├── payment-methods/     # Payment method management
+│   ├── prisma/              # Prisma service & module
+│   ├── restaurants/         # Restaurant queries
+│   ├── users/               # User queries (Admin only)
+│   ├── app.module.ts
+│   └── main.ts
+├── .env
+├── package.json
+└── tsconfig.json
 ```
 
-## Compile and run the project
+---
+
+## ⚙️ Prerequisites
+
+Make sure you have the following installed:
+
+- [Node.js](https://nodejs.org/) v18+
+- [npm](https://npmjs.com/) v9+
+- [PostgreSQL](https://www.postgresql.org/) v14+
+
+---
+
+## 🚀 Setup & Installation
+
+### Step 1 — Clone the repository
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+git clone https://github.com/your-username/food-order-app.git
+cd food-order-app/backend
 ```
 
-## Run tests
+### Step 2 — Install dependencies
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install
 ```
 
-## Deployment
+### Step 3 — Configure environment variables
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Create a `.env` file in the `backend/` root:
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+```env
+# Database
+DATABASE_URL="postgresql://postgres:your_password@localhost:5432/food_ordering"
+
+# JWT
+JWT_SECRET="your-super-secret-jwt-key"
+
+# App
+PORT=3001
+```
+
+> Replace `your_password` with your actual PostgreSQL password.
+
+### Step 4 — Set up the database
+
+Run Prisma migrations to create all tables:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npx prisma migrate dev --name init
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Step 5 — Seed mock data
 
-## Resources
+Populate the database with restaurants, menu items, and test users:
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+npx prisma db seed
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+This creates the following test accounts:
 
-## Support
+| Email | Password | Role | Country |
+|---|---|---|---|
+| `admin.india@food.com` | `password123` | ADMIN | INDIA |
+| `manager.india@food.com` | `password123` | MANAGER | INDIA |
+| `member.india@food.com` | `password123` | MEMBER | INDIA |
+| `admin.america@food.com` | `password123` | ADMIN | AMERICA |
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Step 6 — Start the development server
 
-## Stay in touch
+```bash
+npm run start:dev
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+The GraphQL API will be available at:
+- **API:** `http://localhost:3001/graphql`
+- **Playground:** `http://localhost:3001/graphql` (Apollo Sandbox)
 
-## License
+---
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## 🔐 Authentication
+
+All protected endpoints require a Bearer token in the Authorization header:
+
+```
+Authorization: Bearer <your_jwt_token>
+```
+
+Obtain a token via the `login` mutation:
+
+```graphql
+mutation {
+  login(input: { email: "admin.india@food.com", password: "password123" }) {
+    accessToken
+    user {
+      id
+      name
+      role
+      country
+    }
+  }
+}
+```
+
+---
+
+## 📊 Role & Permission Matrix
+
+| Feature | Admin | Manager | Member |
+|---|:---:|:---:|:---:|
+| View restaurants & menu | ✅ | ✅ | ✅ |
+| Create an order | ✅ | ✅ | ✅ |
+| Checkout & pay | ✅ | ✅ | ❌ |
+| Cancel an order | ✅ | ✅ | ❌ |
+| Add/modify payment methods | ✅ | ❌ | ❌ |
+| View all orders (country) | ✅ | ❌ | ❌ |
+
+---
+
+## 🌍 Re-BAC Country Restrictions
+
+Every user is assigned a country (`INDIA` or `AMERICA`). The system enforces:
+
+- Restaurants are automatically scoped to the user's country
+- Orders can only be placed at restaurants within the user's country
+- Payment methods are country-specific
+- `CountryScopeGuard` blocks cross-country operations at the API level
+
+---
+
+## 📡 GraphQL Operations Reference
+
+### Auth
+```graphql
+mutation Register($input: RegisterInput!)
+mutation Login($input: LoginInput!)
+query Me
+```
+
+### Restaurants
+```graphql
+query GetRestaurants          # scoped to user country
+query GetRestaurant($id: ID!)
+query GetMenuItems($restaurantId: ID!)
+```
+
+### Orders
+```graphql
+mutation CreateOrder($input: CreateOrderInput!)
+mutation CheckoutOrder($input: CheckoutOrderInput!)  # Admin, Manager
+mutation CancelOrder($orderId: ID!)                  # Admin, Manager
+query MyOrders
+query AllOrders                                      # Admin only
+```
+
+### Payment Methods
+```graphql
+mutation AddPaymentMethod($input: CreatePaymentMethodInput!)    # Admin
+mutation UpdatePaymentMethod($input: UpdatePaymentMethodInput!) # Admin
+mutation DeletePaymentMethod($id: ID!)                          # Admin
+query MyPaymentMethods
+```
+
+---
+
+## 🛠️ Available Scripts
+
+```bash
+npm run start:dev       # Start in watch/dev mode
+npm run start:prod      # Start in production mode
+npm run build           # Compile TypeScript
+npm run lint            # Run ESLint
+npm run test            # Run unit tests
+npx prisma studio       # Open Prisma GUI
+npx prisma migrate dev  # Run new migrations
+npx prisma db seed      # Re-seed database
+```
+
+---
+
+## 📦 Tech Stack
+
+| Tool | Purpose |
+|---|---|
+| NestJS | Backend framework |
+| GraphQL + Apollo | API layer |
+| Prisma | ORM & migrations |
+| PostgreSQL | Database |
+| JWT + Passport | Authentication |
+| class-validator | Input validation |
+| bcryptjs | Password hashing |
